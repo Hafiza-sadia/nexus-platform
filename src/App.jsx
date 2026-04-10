@@ -1,6 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
-import { Joyride, STATUS } from "react-joyride";
 import { useState } from "react";
 import { AuthProvider } from "./context/AuthContext";
 import { MeetingProvider } from "./context/MeetingContext";
@@ -54,27 +53,14 @@ function App() {
   }, []);
 
   const handleJoyrideCallback = (data) => {
-    const { status } = data;
-    if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status)) {
-      setRunTour(false);
-    }
+    // Joyride removed for debugging
   };
 
   return <NotificationProvider><AuthProvider><MeetingProvider><Router>
-    {isMounted && <Joyride 
-      steps={tourSteps} 
-      run={runTour} 
-      callback={handleJoyrideCallback} 
-      continuous 
-      showProgress 
-      showSkipButton
-      styles={{
-        options: { primaryColor: '#2563EB', zIndex: 10000 }
-      }}
-    />}
-    <Toaster position="top-right" /><Routes>{
-    /* Authentication Routes */
-  }<Route path="/login" element={<LoginPage />} /><Route path="/register" element={<RegisterPage />} />{
+    <Toaster position="top-right" />
+    <Routes>
+      {/* Authentication Routes */}
+      <Route path="/login" element={<LoginPage />} /><Route path="/register" element={<RegisterPage />} />{
     /* Dashboard Routes */
   }<Route path="/dashboard" element={<DashboardLayout />}><Route path="entrepreneur" element={<EntrepreneurDashboard />} /><Route path="investor" element={<InvestorDashboard />} /></Route>{
     /* Profile Routes */
