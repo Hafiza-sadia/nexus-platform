@@ -1,5 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
+import { Joyride, STATUS } from "react-joyride";
+import { useState } from "react";
 import { AuthProvider } from "./context/AuthContext";
 import { MeetingProvider } from "./context/MeetingContext";
 import { NotificationProvider } from "./context/NotificationContext";
@@ -21,8 +23,50 @@ import { DealsPage } from "./pages/deals/DealsPage";
 import { ChatPage } from "./pages/chat/ChatPage";
 import { SchedulePage } from "./pages/schedule/SchedulePage";
 import { VideoCallPage } from "./pages/video/VideoCallPage";
+import { WalletPage } from "./pages/wallet/WalletPage";
 function App() {
-  return <NotificationProvider><AuthProvider><MeetingProvider><Router><Toaster position="top-right" /><Routes>{
+  const [runTour, setRunTour] = useState(true);
+  
+  const tourSteps = [
+    {
+      target: '.tour-dashboard',
+      content: 'Welcome to your Nexus Dashboard! Here is a summary of your stats.',
+      disableBeacon: true,
+    },
+    {
+      target: '.tour-meetings',
+      content: 'Manage your Calendar and Schedule Video Calls across the network right here.',
+    },
+    {
+      target: '.tour-documents',
+      content: 'Access the Deal Chamber to upload and e-sign legal documents and contracts securely.',
+    },
+    {
+      target: '.tour-wallet',
+      content: 'Check your current funding balance and transaction history in the Wallet.',
+    }
+  ];
+
+  const handleJoyrideCallback = (data) => {
+    const { status } = data;
+    if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status)) {
+      setRunTour(false);
+    }
+  };
+
+  return <NotificationProvider><AuthProvider><MeetingProvider><Router>
+    <Joyride 
+      steps={tourSteps} 
+      run={runTour} 
+      callback={handleJoyrideCallback} 
+      continuous 
+      showProgress 
+      showSkipButton
+      styles={{
+        options: { primaryColor: '#2563EB', zIndex: 10000 }
+      }}
+    />
+    <Toaster position="top-right" /><Routes>{
     /* Authentication Routes */
   }<Route path="/login" element={<LoginPage />} /><Route path="/register" element={<RegisterPage />} />{
     /* Dashboard Routes */
@@ -32,7 +76,7 @@ function App() {
     /* Feature Routes */
   }<Route path="/investors" element={<DashboardLayout />}><Route index element={<InvestorsPage />} /></Route><Route path="/entrepreneurs" element={<DashboardLayout />}><Route index element={<EntrepreneursPage />} /></Route><Route path="/messages" element={<DashboardLayout />}><Route index element={<MessagesPage />} /></Route><Route path="/notifications" element={<DashboardLayout />}><Route index element={<NotificationsPage />} /></Route><Route path="/documents" element={<DashboardLayout />}><Route index element={<DocumentsPage />} /></Route><Route path="/settings" element={<DashboardLayout />}><Route index element={<SettingsPage />} /></Route><Route path="/help" element={<DashboardLayout />}><Route index element={<HelpPage />} /></Route><Route path="/deals" element={<DashboardLayout />}><Route index element={<DealsPage />} /></Route>{
     /* Chat Routes */
-  }<Route path="/chat" element={<DashboardLayout />}><Route index element={<ChatPage />} /><Route path=":userId" element={<ChatPage />} /></Route><Route path="/schedule" element={<DashboardLayout />}><Route index element={<SchedulePage />} /></Route><Route path="/video/:userId" element={<VideoCallPage />} />{
+  }<Route path="/chat" element={<DashboardLayout />}><Route index element={<ChatPage />} /><Route path=":userId" element={<ChatPage />} /></Route><Route path="/schedule" element={<DashboardLayout />}><Route index element={<SchedulePage />} /></Route><Route path="/video/:userId" element={<VideoCallPage />} /><Route path="/wallet" element={<DashboardLayout />}><Route index element={<WalletPage />} /></Route>{
     /* Redirect root to login */
   }<Route path="/" element={<Navigate to="/login" replace />} />{
     /* Catch all other routes and redirect to login */

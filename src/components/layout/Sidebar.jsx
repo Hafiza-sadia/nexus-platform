@@ -10,13 +10,14 @@ import {
   FileText,
   Settings,
   HelpCircle,
-  Calendar
+  Calendar,
+  Wallet
 } from "lucide-react";
 import { useNotifications } from "../../context/NotificationContext";
-const SidebarItem = ({ to, icon, text, badge }) => {
+const SidebarItem = ({ to, icon, text, badge, className }) => {
   return <NavLink
     to={to}
-    className={({ isActive }) => `flex items-center py-2.5 px-4 rounded-md transition-colors duration-200 ${isActive ? "bg-primary-50 text-primary-700" : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"}`}
+    className={({ isActive }) => `flex items-center py-2.5 px-4 rounded-md transition-colors duration-200 ${className || ""} ${isActive ? "bg-primary-50 text-primary-700" : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"}`}
   ><span className="mr-3">{icon}</span><span className="text-sm font-medium">{text}</span>{badge !== void 0 && badge > 0 && <span className="ml-auto bg-primary-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center">{badge}</span>}</NavLink>;
 };
 const Sidebar = () => {
@@ -29,8 +30,9 @@ const Sidebar = () => {
     { to: "/investors", icon: <CircleDollarSign size={20} />, text: "Find Investors" },
     { to: "/messages", icon: <MessageCircle size={20} />, text: "Messages" },
     { to: "/notifications", icon: <Bell size={20} />, text: "Notifications" },
-    { to: "/schedule", icon: <Calendar size={20} />, text: "Meetings" },
-    { to: "/documents", icon: <FileText size={20} />, text: "Documents" }
+    { to: "/schedule", icon: <Calendar size={20} />, text: "Meetings", className: "tour-meetings" },
+    { to: "/documents", icon: <FileText size={20} />, text: "Documents", className: "tour-documents" },
+    { to: "/wallet", icon: <Wallet size={20} />, text: "Wallet", className: "tour-wallet" }
   ];
   const investorItems = [
     { to: "/dashboard/investor", icon: <Home size={20} />, text: "Dashboard" },
@@ -38,8 +40,9 @@ const Sidebar = () => {
     { to: "/entrepreneurs", icon: <Users size={20} />, text: "Find Startups" },
     { to: "/messages", icon: <MessageCircle size={20} />, text: "Messages" },
     { to: "/notifications", icon: <Bell size={20} />, text: "Notifications" },
-    { to: "/schedule", icon: <Calendar size={20} />, text: "Meetings" },
-    { to: "/deals", icon: <FileText size={20} />, text: "Deals" }
+    { to: "/schedule", icon: <Calendar size={20} />, text: "Meetings", className: "tour-meetings" },
+    { to: "/deals", icon: <FileText size={20} />, text: "Deals", className: "tour-documents" },
+    { to: "/wallet", icon: <Wallet size={20} />, text: "Wallet", className: "tour-wallet" }
   ];
   const sidebarItems = user.role === "entrepreneur" ? entrepreneurItems : investorItems;
   const commonItems = [
@@ -52,6 +55,7 @@ const Sidebar = () => {
     icon={item.icon}
     text={item.text}
     badge={item.text === "Notifications" ? unreadCount : void 0}
+    className={item.className}
   />)}</div><div className="mt-8 px-3"><h3 className="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">
               Settings
             </h3><div className="mt-2 space-y-1">{commonItems.map((item, index) => <SidebarItem

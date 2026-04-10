@@ -19,7 +19,7 @@ const MeetingProvider = ({ children }) => {
         participantName: "Sarah Johnson",
         status: "confirmed",
         type: "video",
-        meetingLink: "https://meet.jit.si/nexus-m1"
+        meetingLink: "/video/e1"
       },
       {
         id: "m2",

@@ -14,6 +14,32 @@ const RegisterPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { register } = useAuth();
   const navigate = useNavigate();
+
+  const getPasswordStrength = (pass) => {
+    let strength = 0;
+    if (pass.length >= 8) strength += 1;
+    if (pass.match(/[a-z]/)) strength += 1;
+    if (pass.match(/[A-Z]/)) strength += 1;
+    if (pass.match(/[0-9]/)) strength += 1;
+    if (pass.match(/[^a-zA-Z0-9]/)) strength += 1;
+    return strength;
+  };
+
+  const strength = getPasswordStrength(password);
+  
+  const getStrengthColor = () => {
+    if (strength === 0) return "bg-gray-200";
+    if (strength <= 2) return "bg-red-500";
+    if (strength === 3) return "bg-yellow-500";
+    if (strength >= 4) return "bg-green-500";
+  };
+  
+  const getStrengthLabel = () => {
+    if (strength === 0) return "";
+    if (strength <= 2) return "Weak";
+    if (strength === 3) return "Fair";
+    if (strength >= 4) return "Strong";
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
@@ -71,8 +97,30 @@ const RegisterPage = () => {
     onChange={(e) => setPassword(e.target.value)}
     required
     fullWidth
+    fullWidth
     startAdornment={<Lock size={18} />}
-  /><Input
+  />
+  {password.length > 0 && (
+    <div className="mt-2 text-xs">
+      <div className="flex justify-between items-center mb-1">
+        <span className="text-gray-600 font-medium">Password Strength:</span>
+        <span className={`font-bold ${
+          strength <= 2 ? 'text-red-500' : strength === 3 ? 'text-yellow-500' : 'text-green-500'
+        }`}>{getStrengthLabel()}</span>
+      </div>
+      <div className="flex space-x-1 h-1.5">
+        {[1, 2, 3, 4, 5].map((level) => (
+          <div
+            key={level}
+            className={`flex-1 rounded-full ${
+              strength >= level ? getStrengthColor() : "bg-gray-200"
+            } transition-all duration-300`}
+          />
+        ))}
+      </div>
+    </div>
+  )}
+  <Input
     label="Confirm password"
     type="password"
     value={confirmPassword}
