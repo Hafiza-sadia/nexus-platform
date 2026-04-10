@@ -24,28 +24,34 @@ import { ChatPage } from "./pages/chat/ChatPage";
 import { SchedulePage } from "./pages/schedule/SchedulePage";
 import { VideoCallPage } from "./pages/video/VideoCallPage";
 import { WalletPage } from "./pages/wallet/WalletPage";
+import { useEffect } from "react";
+
+const tourSteps = [
+  {
+    target: '.tour-dashboard',
+    content: 'Welcome to your Nexus Dashboard! Here is a summary of your stats.',
+    disableBeacon: true,
+  },
+  {
+    target: '.tour-meetings',
+    content: 'Manage your Calendar and Schedule Video Calls across the network right here.',
+  },
+  {
+    target: '.tour-documents',
+    content: 'Access the Deal Chamber to upload and e-sign legal documents and contracts securely.',
+  },
+  {
+    target: '.tour-wallet',
+    content: 'Check your current funding balance and transaction history in the Wallet.',
+  }
+];
 function App() {
   const [runTour, setRunTour] = useState(true);
-  
-  const tourSteps = [
-    {
-      target: '.tour-dashboard',
-      content: 'Welcome to your Nexus Dashboard! Here is a summary of your stats.',
-      disableBeacon: true,
-    },
-    {
-      target: '.tour-meetings',
-      content: 'Manage your Calendar and Schedule Video Calls across the network right here.',
-    },
-    {
-      target: '.tour-documents',
-      content: 'Access the Deal Chamber to upload and e-sign legal documents and contracts securely.',
-    },
-    {
-      target: '.tour-wallet',
-      content: 'Check your current funding balance and transaction history in the Wallet.',
-    }
-  ];
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const handleJoyrideCallback = (data) => {
     const { status } = data;
@@ -55,7 +61,7 @@ function App() {
   };
 
   return <NotificationProvider><AuthProvider><MeetingProvider><Router>
-    <Joyride 
+    {isMounted && <Joyride 
       steps={tourSteps} 
       run={runTour} 
       callback={handleJoyrideCallback} 
@@ -65,7 +71,7 @@ function App() {
       styles={{
         options: { primaryColor: '#2563EB', zIndex: 10000 }
       }}
-    />
+    />}
     <Toaster position="top-right" /><Routes>{
     /* Authentication Routes */
   }<Route path="/login" element={<LoginPage />} /><Route path="/register" element={<RegisterPage />} />{
