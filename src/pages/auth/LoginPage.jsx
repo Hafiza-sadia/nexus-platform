@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { User, CircleDollarSign, Building2, LogIn, AlertCircle } from "lucide-react";
+import { User, CircleDollarSign, Building2, LogIn, AlertCircle, Lock } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { Button } from "../../components/ui/Button";
 import { Input } from "../../components/ui/Input";

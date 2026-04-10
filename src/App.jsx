@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
-import { useState } from "react";
+import { Joyride, STATUS } from "react-joyride";
+import { useState, useEffect } from "react";
 import { AuthProvider } from "./context/AuthContext";
 import { MeetingProvider } from "./context/MeetingContext";
 import { NotificationProvider } from "./context/NotificationContext";
@@ -53,10 +54,24 @@ function App() {
   }, []);
 
   const handleJoyrideCallback = (data) => {
-    // Joyride removed for debugging
+    const { status } = data;
+    if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status)) {
+      setRunTour(false);
+    }
   };
 
   return <NotificationProvider><AuthProvider><MeetingProvider><Router>
+    {isMounted && <Joyride 
+      steps={tourSteps} 
+      run={runTour} 
+      callback={handleJoyrideCallback} 
+      continuous 
+      showProgress 
+      showSkipButton
+      styles={{
+        options: { primaryColor: '#2563EB', zIndex: 10000 }
+      }}
+    />}
     <Toaster position="top-right" />
     <Routes>
       {/* Authentication Routes */}
