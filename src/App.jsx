@@ -24,7 +24,6 @@ import { ChatPage } from "./pages/chat/ChatPage";
 import { SchedulePage } from "./pages/schedule/SchedulePage";
 import { VideoCallPage } from "./pages/video/VideoCallPage";
 import { WalletPage } from "./pages/wallet/WalletPage";
-import { useEffect } from "react";
 
 const tourSteps = [
   {
