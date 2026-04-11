@@ -1,27 +1,42 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { Menu, X, Bell, MessageCircle, User, LogOut, Building2, CircleDollarSign } from "lucide-react";
+import { 
+  Menu, 
+  X, 
+  Bell, 
+  MessageCircle, 
+  User, 
+  LogOut, 
+  Building2, 
+  CircleDollarSign,
+  Home
+} from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { useNotifications } from "../../context/NotificationContext";
 import { Avatar } from "../ui/Avatar";
 import { Button } from "../ui/Button";
+
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user, logout } = useAuth();
   const { unreadCount } = useNotifications();
   const navigate = useNavigate();
+
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
+
   const handleLogout = () => {
     logout();
     navigate("/login");
   };
+
   const dashboardRoute = user?.role === "entrepreneur" ? "/dashboard/entrepreneur" : "/dashboard/investor";
   const profileRoute = user ? `/profile/${user.role}/${user.id}` : "/login";
+
   const navLinks = [
     {
-      icon: user?.role === "entrepreneur" ? <Building2 size={18} /> : <CircleDollarSign size={18} />,
+      icon: <Home size={18} />,
       text: "Dashboard",
       path: dashboardRoute
     },
@@ -41,60 +56,147 @@ const Navbar = () => {
       path: profileRoute
     }
   ];
-  return <nav className="bg-white shadow-md"><div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div className="flex justify-between h-16">{
-    /* Logo and brand */
-  }<div className="flex-shrink-0 flex items-center"><Link to="/" className="flex items-center space-x-2"><div className="w-8 h-8 bg-primary-600 rounded-md flex items-center justify-center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-white"><path d="M20 7H4C2.89543 7 2 7.89543 2 9V19C2 20.1046 2.89543 21 4 21H20C21.1046 21 22 20.1046 22 19V9C22 7.89543 21.1046 7 20 7Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /><path d="M16 21V5C16 3.89543 15.1046 3 14 3H10C8.89543 3 8 3.89543 8 5V21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg></div><span className="text-lg font-bold text-gray-900">Business Nexus</span></Link></div>{
-    /* Desktop navigation */
-  }<div className="hidden md:flex md:items-center md:ml-6">{user ? <div className="flex items-center space-x-4">{navLinks.map((link, index) => <Link
-    key={index}
-    to={link.path}
-    className="relative inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-50 rounded-md transition-colors duration-200 group"
-  ><span className="mr-2 group-hover:scale-110 transition-transform">{link.icon}</span>{link.text}{link.text === "Notifications" && unreadCount > 0 && <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full ring-2 ring-white">{unreadCount}</span>}</Link>)}<Button
-    variant="ghost"
-    onClick={handleLogout}
-    leftIcon={<LogOut size={18} />}
-  >
+
+  return (
+    <nav className="bg-white border-b border-gray-100 h-16 sticky top-0 z-50">
+      <div className="max-w-[1600px] mx-auto px-4 h-full">
+        <div className="flex justify-between items-center h-full gap-4">
+          {/* Brand */}
+          <div className="flex-shrink-0">
+            <Link to="/" className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
+                <Building2 size={18} className="text-white" />
+              </div>
+              <span className="text-lg font-bold text-gray-900 hidden lg:block tracking-tight">Business Nexus</span>
+            </Link>
+          </div>
+
+          {/* Desktop navigation - Centered like SS */}
+          <div className="hidden md:flex flex-1 justify-center items-center h-full">
+            {user && (
+              <div className="flex items-center space-x-1 lg:space-x-4">
+                {navLinks.map((link, index) => (
+                  <Link
+                    key={index}
+                    to={link.path}
+                    className="flex items-center px-4 py-2 text-[13px] font-bold text-gray-500 hover:text-primary-600 transition-all rounded-xl hover:bg-primary-50/50 group"
+                  >
+                    <span className="mr-2 opacity-60 group-hover:opacity-100 transition-opacity">
+                      {link.icon}
+                    </span>
+                    {link.text}
+                    {link.text === "Notifications" && unreadCount > 0 && (
+                      <span className="ml-2 bg-red-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full ring-2 ring-white">
+                        {unreadCount}
+                      </span>
+                    )}
+                  </Link>
+                ))}
+                
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center px-4 py-2 text-[13px] font-bold text-gray-500 hover:text-red-600 transition-all rounded-xl hover:bg-red-50/50 group"
+                >
+                  <LogOut size={18} className="mr-2 opacity-60 group-hover:opacity-100" />
                   Logout
-                </Button><Link to={profileRoute} className="flex items-center space-x-2 ml-2"><Avatar
-    src={user.avatarUrl}
-    alt={user.name}
-    size="sm"
-    status={user.isOnline ? "online" : "offline"}
-  /><span className="text-sm font-medium text-gray-700">{user.name}</span></Link></div> : <div className="flex items-center space-x-4"><Link to="/login"><Button variant="outline">Log in</Button></Link><Link to="/register"><Button>Sign up</Button></Link></div>}</div>{
-    /* Mobile menu button */
-  }<div className="md:hidden flex items-center"><button
-    onClick={toggleMenu}
-    className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-primary-600 hover:bg-gray-50 focus:outline-none"
-  >{isMenuOpen ? <X className="block h-6 w-6" /> : <Menu className="block h-6 w-6" />}</button></div></div></div>{
-    /* Mobile menu */
-  }{isMenuOpen && <div className="md:hidden bg-white border-b border-gray-200 animate-fade-in"><div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">{user ? <><div className="flex items-center space-x-3 px-3 py-2"><Avatar
-    src={user.avatarUrl}
-    alt={user.name}
-    size="sm"
-    status={user.isOnline ? "online" : "offline"}
-  /><div><p className="text-sm font-medium text-gray-800">{user.name}</p><p className="text-xs text-gray-500 capitalize">{user.role}</p></div></div><div className="border-t border-gray-200 pt-2">{navLinks.map((link, index) => <Link
-    key={index}
-    to={link.path}
-    className="flex items-center px-3 py-2 text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-50 rounded-md"
-    onClick={() => setIsMenuOpen(false)}
-  ><span className="mr-3">{link.icon}</span>{link.text}</Link>)}<button
-    onClick={() => {
-      handleLogout();
-      setIsMenuOpen(false);
-    }}
-    className="flex w-full items-center px-3 py-2 text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-50 rounded-md"
-  ><LogOut size={18} className="mr-3" />
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* User Profile - Far Right */}
+          <div className="flex items-center gap-3">
+            {user ? (
+              <Link to={profileRoute} className="flex items-center gap-3 pl-4 border-l border-gray-100 group">
+                 <div className="flex flex-col items-end hidden lg:flex">
+                   <span className="text-sm font-bold text-gray-900 group-hover:text-primary-600 transition-colors uppercase tracking-tight">{user.name}</span>
+                   <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none">{user.role}</span>
+                 </div>
+                 <Avatar
+                  src={user.avatarUrl}
+                  alt={user.name}
+                  size="sm"
+                  status={user.isOnline ? "online" : "offline"}
+                  className="ring-2 ring-gray-50 group-hover:ring-primary-100 transition-all"
+                />
+              </Link>
+            ) : (
+              <div className="flex items-center space-x-3">
+                <Link to="/login"><Button variant="ghost" size="sm" className="font-bold">Log in</Button></Link>
+                <Link to="/register"><Button size="sm" className="font-bold">Get Started</Button></Link>
+              </div>
+            )}
+          </div>
+
+          {/* Mobile menu button */}
+          <div className="md:hidden flex items-center">
+            <button
+              onClick={toggleMenu}
+              className="p-2 rounded-lg text-gray-500 hover:bg-gray-100 transition-colors"
+            >
+              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile menu */}
+      {isMenuOpen && (
+        <div className="md:hidden bg-white border-b border-gray-100 animate-fade-in shadow-xl">
+          <div className="px-3 pt-4 pb-6 space-y-2">
+            {user ? (
+              <>
+                <div className="flex items-center space-x-3 px-3 py-4 bg-gray-50 rounded-2xl mb-4">
+                  <Avatar
+                    src={user.avatarUrl}
+                    alt={user.name}
+                    size="md"
+                    status={user.isOnline ? "online" : "offline"}
+                  />
+                  <div>
+                    <p className="text-sm font-bold text-gray-900">{user.name}</p>
+                    <p className="text-xs text-gray-500 font-bold uppercase tracking-widest">{user.role}</p>
+                  </div>
+                </div>
+                <div className="space-y-1">
+                  {navLinks.map((link, index) => (
+                    <Link
+                      key={index}
+                      to={link.path}
+                      className="flex items-center px-4 py-3 text-sm font-bold text-gray-600 hover:text-primary-600 hover:bg-primary-50 rounded-xl transition-all"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      <span className="mr-3 opacity-60">{link.icon}</span>
+                      {link.text}
+                    </Link>
+                  ))}
+                  <button
+                    onClick={() => {
+                      handleLogout();
+                      setIsMenuOpen(false);
+                    }}
+                    className="flex w-full items-center px-4 py-3 text-sm font-bold text-red-600 hover:bg-red-50 rounded-xl transition-all"
+                  >
+                    <LogOut size={18} className="mr-3" />
                     Logout
-                  </button></div></> : <div className="flex flex-col space-y-2 px-3 py-2"><Link
-    to="/login"
-    className="w-full"
-    onClick={() => setIsMenuOpen(false)}
-  ><Button variant="outline" fullWidth>Log in</Button></Link><Link
-    to="/register"
-    className="w-full"
-    onClick={() => setIsMenuOpen(false)}
-  ><Button fullWidth>Sign up</Button></Link></div>}</div></div>}</nav>;
+                  </button>
+                </div>
+              </>
+            ) : (
+              <div className="flex flex-col space-y-2 p-2">
+                <Link to="/login" onClick={() => setIsMenuOpen(false)} className="w-full">
+                  <Button variant="outline" fullWidth className="font-bold py-4">Log in</Button>
+                </Link>
+                <Link to="/register" onClick={() => setIsMenuOpen(false)} className="w-full">
+                  <Button fullWidth className="font-bold py-4">Get Started</Button>
+                </Link>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </nav>
+  );
 };
-export {
-  Navbar
-};
+
+export { Navbar };

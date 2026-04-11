@@ -7,12 +7,16 @@ const MeetingProvider = ({ children }) => {
   const [meetings, setMeetings] = useState([]);
   const [availabilitySlots, setAvailabilitySlots] = useState([]);
   useEffect(() => {
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+    
     const mockMeetings = [
       {
         id: "m1",
-        title: "Initial Pitch - TechWave AI",
-        startTime: new Date((/* @__PURE__ */ new Date()).setHours(10, 0, 0, 0)).toISOString(),
-        endTime: new Date((/* @__PURE__ */ new Date()).setHours(11, 0, 0, 0)).toISOString(),
+        title: "Strategy Session - TechWave AI",
+        startTime: new Date(today.setHours(9, 30, 0, 0)).toISOString(),
+        endTime: new Date(today.setHours(10, 30, 0, 0)).toISOString(),
         hostId: "i1",
         hostName: "Michael Rodriguez",
         participantId: "e1",
@@ -23,30 +27,56 @@ const MeetingProvider = ({ children }) => {
       },
       {
         id: "m2",
-        title: "Follow-up Discussion",
-        startTime: new Date((/* @__PURE__ */ new Date()).setDate((/* @__PURE__ */ new Date()).getDate() + 1)).toISOString(),
-        endTime: new Date((/* @__PURE__ */ new Date()).setDate((/* @__PURE__ */ new Date()).getDate() + 1)).toISOString(),
+        title: "Seed Fund Presentation",
+        startTime: new Date(today.setHours(14, 0, 0, 0)).toISOString(),
+        endTime: new Date(today.setHours(15, 30, 0, 0)).toISOString(),
         hostId: "e1",
         hostName: "Sarah Johnson",
         participantId: "i2",
         participantName: "Jennifer Lee",
+        status: "confirmed",
+        type: "video",
+        meetingLink: "/video/i2"
+      },
+      {
+        id: "m3",
+        title: "Product Roadmap Review",
+        startTime: new Date(tomorrow.setHours(11, 0, 0, 0)).toISOString(),
+        endTime: new Date(tomorrow.setHours(12, 0, 0, 0)).toISOString(),
+        hostId: "e1",
+        hostName: "Sarah Johnson",
+        participantId: "i3",
+        participantName: "Robert Torres",
         status: "pending",
         type: "video"
+      },
+      {
+        id: "m4",
+        title: "Investors' Lunch",
+        startTime: new Date(tomorrow.setHours(13, 0, 0, 0)).toISOString(),
+        endTime: new Date(tomorrow.setHours(14, 30, 0, 0)).toISOString(),
+        hostId: "i1",
+        hostName: "Michael Rodriguez",
+        participantId: "e1",
+        participantName: "Sarah Johnson",
+        status: "confirmed",
+        type: "in-person"
       }
     ];
     setMeetings(mockMeetings);
+
     const mockSlots = [
       {
         id: "s1",
-        userId: "i1",
-        startTime: new Date((/* @__PURE__ */ new Date()).setHours(14, 0, 0, 0)).toISOString(),
-        endTime: new Date((/* @__PURE__ */ new Date()).setHours(15, 0, 0, 0)).toISOString()
+        userId: "e1",
+        startTime: new Date(today.setHours(16, 0, 0, 0)).toISOString(),
+        endTime: new Date(today.setHours(17, 30, 0, 0)).toISOString()
       },
       {
         id: "s2",
-        userId: "i1",
-        startTime: new Date((/* @__PURE__ */ new Date()).setHours(16, 0, 0, 0)).toISOString(),
-        endTime: new Date((/* @__PURE__ */ new Date()).setHours(17, 0, 0, 0)).toISOString()
+        userId: "e1",
+        startTime: new Date(tomorrow.setHours(9, 0, 0, 0)).toISOString(),
+        endTime: new Date(tomorrow.setHours(10, 30, 0, 0)).toISOString()
       }
     ];
     setAvailabilitySlots(mockSlots);
